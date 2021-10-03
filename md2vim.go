@@ -72,7 +72,7 @@ func main() {
 	}
 
 	renderer := VimDocRenderer(args[1], *desc, *cols, *tabs, flags)
-	extensions := blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS | blackfriday.EXTENSION_SPACE_HEADERS
+	extensions := blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS | blackfriday.EXTENSION_SPACE_HEADERS | blackfriday.EXTENSION_HEADER_IDS
 	output := blackfriday.Markdown(input, renderer, extensions)
 
 	file, err := os.Create(args[1])

@@ -92,13 +92,6 @@ func (v *vimDoc) fixupCodeTags(input []byte) []byte {
 }
 
 func (v *vimDoc) buildHelpTag(text []byte) []byte {
-  r, _ := regexp.Compile("^.+ {#([[:graph:]]+)}$")
-  match := r.FindStringSubmatch(string(text))
-
-  if len(match) == 2 {
-    text = []byte(match[1])
-  }
-
 	if v.flags&flagPascal == 0 {
 		text = bytes.ToLower(text)
 		text = bytes.Replace(text, []byte{' '}, []byte{'_'}, -1)
@@ -233,10 +226,20 @@ func (v *vimDoc) Header(out *bytes.Buffer, text func() bool, level int, id strin
 	}
 
 	var temp []byte
+	var h *heading
+
 	temp = append(temp, out.Bytes()[headingPos:]...)
 	out.Truncate(headingPos)
 
-	h := &heading{temp, level}
+	// Trim markdown style
+  temp = bytes.Trim(temp, "`*~_")
+
+  if id != "" {
+    h = &heading{[]byte(id), level}
+  } else {
+	  h = &heading{temp, level}
+  }
+
 	v.headings = append(v.headings, h)
 
 	tag := fmt.Sprintf("*%s*", v.buildHelpTag(h.text))
