@@ -92,6 +92,13 @@ func (v *vimDoc) fixupCodeTags(input []byte) []byte {
 }
 
 func (v *vimDoc) buildHelpTag(text []byte) []byte {
+  r, _ := regexp.Compile("^.+ {#([[:graph:]]+)}$")
+  match := r.FindStringSubmatch(string(text))
+
+  if len(match) == 2 {
+    text = []byte(match[1])
+  }
+
 	if v.flags&flagPascal == 0 {
 		text = bytes.ToLower(text)
 		text = bytes.Replace(text, []byte{' '}, []byte{'_'}, -1)
