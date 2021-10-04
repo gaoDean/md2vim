@@ -100,7 +100,7 @@ func (v *vimDoc) buildHelpTag(text []byte) []byte {
 		text = bytes.Replace(text, []byte{' '}, []byte{}, -1)
 	}
 
-	return []byte(fmt.Sprintf("%s-%s", v.title, text))
+	return []byte(fmt.Sprintf("%s.%s", v.title, text))
 }
 
 func (v *vimDoc) buildChapters(h *heading) []byte {
