@@ -45,6 +45,7 @@ func main() {
 	notoc := flag.Bool("notoc", false, "do not generate table of contents for headings")
 	norules := flag.Bool("norules", false, "do not generate horizontal rules above headings")
 	pascal := flag.Bool("pascal", false, "use PascalCase for abbreviating tags")
+  generate_tags := flag.Bool("generate-tags", false, "generate tags file")
 	desc := flag.String("desc", "", "short description of the help file")
 	flag.Usage = usage
 	flag.Parse()
@@ -71,7 +72,8 @@ func main() {
 		flags |= flagPascal
 	}
 
-	renderer := VimDocRenderer(args[1], *desc, *cols, *tabs, flags)
+  tags := make(map[string]struct{})
+	renderer := VimDocRenderer(args[1], *desc, tags, *cols, *tabs, flags)
 	extensions := blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS | blackfriday.EXTENSION_SPACE_HEADERS | blackfriday.EXTENSION_HEADER_IDS
 	output := blackfriday.Markdown(input, renderer, extensions)
 
@@ -80,6 +82,23 @@ func main() {
 		log.Fatalf("unable to write to file: %s", args[1])
 	}
 	defer file.Close()
+
+  if *generate_tags {
+
+  dir := path.Dir(args[1])
+  filename := path.Base(args[1])
+  tags_file, err := os.Create(path.Join(dir, "tags"))
+
+  if err != nil {
+    log.Fatalf("unable to write to tag file")
+  }
+  defer tags_file.Close()
+
+  for tag := range tags {
+    tags_file.Write([]byte(fmt.Sprintf("%s\t%s\t/*%s*\n", tag, filename, tag)))
+  }
+  }
+
 
 	if _, err := file.Write(output); err != nil {
 		log.Fatal("unable to write output")

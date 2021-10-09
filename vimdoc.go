@@ -63,9 +63,10 @@ type vimDoc struct {
 	tocPos   int
 	lists    []*list
 	headings []*heading
+	tags     map[string]struct{}
 }
 
-func VimDocRenderer(filename, desc string, cols, tabs, flags int) blackfriday.Renderer {
+func VimDocRenderer(filename, desc string, tags map[string]struct{}, cols, tabs, flags int) blackfriday.Renderer {
 	filename = path.Base(filename)
 	title := filename
 
@@ -83,6 +84,7 @@ func VimDocRenderer(filename, desc string, cols, tabs, flags int) blackfriday.Re
 		cols:     cols,
 		tabs:     tabs,
 		flags:    flags,
+    tags:     tags,
 		tocPos:   -1}
 }
 
@@ -100,7 +102,9 @@ func (v *vimDoc) buildHelpTag(text []byte) []byte {
 		text = bytes.Replace(text, []byte{' '}, []byte{}, -1)
 	}
 
-	return []byte(fmt.Sprintf("%s.%s", v.title, text))
+  tag := fmt.Sprintf("%s_%s", v.title, text)
+  v.tags[tag] = struct{}{}
+  return []byte(tag)
 }
 
 func (v *vimDoc) buildChapters(h *heading) []byte {
