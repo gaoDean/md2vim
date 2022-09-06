@@ -28,6 +28,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"sort"
 
 	"github.com/russross/blackfriday"
 )
@@ -76,6 +77,11 @@ func main() {
 	renderer := VimDocRenderer(args[1], *desc, tags, *cols, *tabs, flags)
 	extensions := blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS | blackfriday.EXTENSION_SPACE_HEADERS | blackfriday.EXTENSION_HEADER_IDS
 	output := blackfriday.Markdown(input, renderer, extensions)
+	tagsSorted := make([]string, 0, len(tags))
+    for k := range tags {
+        tagsSorted = append(tagsSorted, k)
+    }
+	sort.Strings(tagsSorted)
 
 	file, err := os.Create(args[1])
 	if err != nil {
@@ -94,7 +100,7 @@ func main() {
 		}
 		defer tags_file.Close()
 
-		for tag := range tags {
+		for _, tag := range tagsSorted {
 			tags_file.Write([]byte(fmt.Sprintf("%s\t%s\t/*%s*\n", tag, filename, tag)))
 		}
 	}

@@ -1,4 +1,4 @@
-module github.com/davysson/md2vim
+module github.com/gaoDean/md2vim
 
 go 1.16
 

@@ -15,7 +15,7 @@ in Md2Vim's design.
 If you already have the Go environment and toolchain set up, you can get the latest version by running:
 
 ```
-$ go get github.com/FooSoft/md2vim
+$ go install github.com/FooSoft/md2vim
 ```
 
 Otherwise, you can use the pre-built binaries for the platforms below:
