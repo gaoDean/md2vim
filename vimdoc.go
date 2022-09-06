@@ -84,7 +84,7 @@ func VimDocRenderer(filename, desc string, tags map[string]struct{}, cols, tabs,
 		cols:     cols,
 		tabs:     tabs,
 		flags:    flags,
-    tags:     tags,
+		tags:     tags,
 		tocPos:   -1}
 }
 
@@ -102,9 +102,9 @@ func (v *vimDoc) buildHelpTag(text []byte) []byte {
 		text = bytes.Replace(text, []byte{' '}, []byte{}, -1)
 	}
 
-  tag := fmt.Sprintf("%s_%s", v.title, text)
-  v.tags[tag] = struct{}{}
-  return []byte(tag)
+	tag := fmt.Sprintf("%s_%s", v.title, text)
+	v.tags[tag] = struct{}{}
+	return []byte(tag)
 }
 
 func (v *vimDoc) buildChapters(h *heading) []byte {
@@ -236,13 +236,13 @@ func (v *vimDoc) Header(out *bytes.Buffer, text func() bool, level int, id strin
 	out.Truncate(headingPos)
 
 	// Trim markdown style
-  temp = bytes.Trim(temp, "`*~_")
+	temp = bytes.Trim(temp, "`*~_")
 
-  if id != "" {
-    h = &heading{[]byte(id), level}
-  } else {
-	  h = &heading{temp, level}
-  }
+	if id != "" {
+		h = &heading{[]byte(id), level}
+	} else {
+		h = &heading{temp, level}
+	}
 
 	v.headings = append(v.headings, h)
 
